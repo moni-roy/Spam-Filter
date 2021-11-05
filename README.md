@@ -53,9 +53,13 @@ Naive Bayes Classifier is used to calculate the probability of the spam/hum mess
 
 ### Naive Bayes Classifier
 
-Naive Bayes classifiers are highly scalable, requiring a number of parameters linear in the number of variables (features/predictors) in a learning problem. Maximum-likelihood training can be done by evaluating a closed-form expression,  which takes linear time, rather than by expensive iterative approximation as used for many other types of classifiers.
+A Naive Bayes classifier is a probabilistic machine learning model that’s used for the classification task. The crux of the classifier is based on the Bayes theorem.
 
-#### Equation:
+The multinomial Naive Bayes method is used here. This is mainly for the document classification problem, i.e., whether a document belongs to the category of sports, politics, technology, etc. The features/predictors used by the classifier are the frequency of the words present in the document.
+
+The following formula is used to calculate the probability of a message being spam or not:
+
+#### Equation
 
 ```math
 P(w|c) = (C(w, c) + 1) / (C(c) + |V|)
@@ -67,36 +71,65 @@ C(c) = total number of words in the given class
 |V| = number of the unique vocabulary in the dataset.
 ```
 
+## Challenges
+
+There are a few challenges for this project. To get good results, data
+processing and feature extraction are most important here. In this
+project, only text cleaning is done as data processing, but feature
+extraction has not been applied.
+
+The following steps are done for text cleaning:
+
+- convert all letters to lowercase
+- clean punctuation
+- clean numbers
+- remove multiple spaces
+- remove non-ascii characters
+- remove not alphabetic characters
+- remove single characters
+- remove hyperlinks
+
 ## Pre-requisites and Environment Settings
 
 - Python >= 3.8
 - Pandas
 
-## Run Command
+## Run Command / Usage
 
 ```text
 <create a virtual environment>
-python3 -m venv spamfilter
+$ python3 -m venv spamfilter
 
 <activate the virtual environment>
-source spamfilter/bin/activate
+$ source spamfilter/bin/activate
 
 <install the requirement>
-python3 -m pip install -r requirements.txt
+$ python3 -m pip install -r requirements.txt
 
 <run the training code>
-python3 code/training.py -i <spam.csv file> -os <output spam probability file> -oh <output ham probability file>`
+$ python3 code/training.py -i <spam.csv file> -os <output spam probability file> -oh <output ham probability file>
 
 <classify the test set>
-python3 code/classify.py -i <testing dataset .csv file> -is <spam probability file> -ih <ham probability file> -o <classification output filename>
+$ python3 code/classify.py -i <testing dataset .csv file> -is <spam probability file> -ih <ham probability file> -o <classification output filename>
 
 <add new training to training set>
-python3 code/addtotraining.py -is <input spam probability file> -ih <input ham probability file> -s <new training set file>
-
+$ python3 code/addtotraining.py -is <input spam probability file> -ih <input ham probability file> -s <new training set file>
 ```
 
 Some notes,
 
 - Creating and activating virtual environment are optional steps.
-- Training input file should have level in the first row, otherwise first rows will be excluded from data.
-- Same condition applicable for addToTraining. It should be a file and same structure as training file.
+- The first row of the input file is counted as a header. So every input file should have a header row; otherwise, the first row will be excluded from data.
+
+## Examples to Run
+
+```text
+<to run train dataset>
+$ python3 code/training.py -i data/spam.csv -os data/spam_probability.csv -oh data/ham_probability.csv
+
+<to classify test data>
+$ python3 code/classify.py -i data/test.csv -is data/spam_probability.csv -ih data/ham_probability.csv -o data/output.csv
+
+<to add new dataset to trained data>
+$ python3 code/addtotraining.py -is data/spam_probability.csv -ih data/ham_probability.csv -s data/new_training.csv
+```

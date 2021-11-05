@@ -15,6 +15,8 @@ def clean_data(data):
     data['message'] = data['message'].str.replace('[^a-zA-Z\s]', '', regex=True)
     # remove single characters
     data['message'] = data['message'].str.replace('\s+[a-zA-Z]\s+', ' ', regex=True)
+    # remove hyperlinks
+    data['message'] = data['message'].str.replace('http\S+', '', regex=True)
     return data
 
 # read a csv file keep only first two columns and rename them as 'label' and 'message'

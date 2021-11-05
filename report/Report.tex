@@ -1,0 +1,210 @@
+\documentclass[twoside,10pt]{article}
+\usepackage{xparse}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{tcolorbox}
+\setlength\parindent{0pt}
+\definecolor{bubblegum}{rgb}{0.99, 0.76, 0.8}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor,colortbl}
+\usepackage{framed}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{font={small}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{lipsum}
+\usepackage{courier}
+\usepackage{xcolor}
+
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\normalsize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b
+}
+\lstset{style=mystyle}
+
+
+\begin{document}
+
+\begin{center}
+    {\Large \bf CS 682 – Artificial Intelligence}
+
+    \vspace{.5cm}
+
+    {\Large \bf Project 2 - Spam Filter}
+
+    \vspace{0.5cm}
+    {\large \bf Monikrishna Roy}
+    \vspace{0.5cm}
+
+    {\large \today}
+
+\end{center}
+
+\section*{Purpose}\label{purpose}
+
+The purpose of this assignment is to provide a multi-executable
+programming experience with a discriminatory algorithm that can make
+decisions using Artificial Intelligence. You should be able to utilize
+probability in order to classify using a Naive Bayes Classifier.
+
+\section*{Task}\label{task}
+
+Please write a program to parse an existing dataset on real-world SMS
+messages. (note: since these data come from real-world interactions,
+these messages may use language which I would never use in class and
+that violates professional conversational norms. If that is likely to
+trigger a negative reaction, please do not read the messages themselves.
+However, I feel that it is important to work with real-world data
+wherever possible).\\
+
+You will need to write two programs:
+
+\begin{enumerate}
+    \item
+
+          \textit{training -i \textless{}spam.csv file\textgreater{} -os \textless{}output spam probability file\textgreater{} -oh \textless{}output ham probability file\textgreater{}}
+
+          Trains dataset from .csv file and save to new file. Each line of the
+          .csv file has at least two fields, separated by a comma:
+
+          \begin{verbatim}
+    1. <spam|ham> ham if it is a legitimate SMS, spam if not
+    2. "..." the SMS message
+\end{verbatim}
+
+          You will need to output two probability files (one for ham, one for
+          spam):
+
+          \begin{verbatim}
+<count of the total number of words (n)>
+m lines, one for each word <word> <number of word occurrences>
+\end{verbatim}
+    \item
+          \textit{classify -i \textless{}testing dataset .csv file\textgreater{} -is \textless{}spam probability file\textgreater{} -ih \textless{}ham probability file\textgreater{} -o \textless{}classification output filename\textgreater{}}
+
+          Classifies new data from training file and testing .csv file (same
+          format as above, specified on the command-line)
+
+          You will need to output one classification file:
+
+          \begin{verbatim}
+m lines, one for each SMS in the testing dataset
+(in the same order as the testing set is in <spam/ham>)
+(the classification of the SMS)
+\end{verbatim}
+\end{enumerate}
+
+\section*{Graduate Student Extra
+  Assignment}\label{graduate-student-extra-assignment}
+
+Please also write a program to add new data (in a .csv file) to the
+existing training database. \\
+
+\textit{addtotraining -is \textless{}input spam probability file\textgreater{} -ih \textless{}input ham probability file\textgreater{} -s "\textless{}string\textgreater{}"}
+
+\section*{Solution/Algorithms}\label{solutionalgorithms}
+
+Naive Bayes Classifier is used to calculate the probability of the
+spam/hum messages.
+
+\subsection*{Naive Bayes Classifier}\label{naive-bayes-classifier}
+
+A Naive Bayes classifier is a probabilistic machine learning model that’s used for the classification task. The crux of the classifier is based on the Bayes theorem.\\
+
+The multinomial Naive Bayes method is used here. This is mainly for the document classification problem, i.e., whether a document belongs to the category of sports, politics, technology, etc. The features/predictors used by the classifier are the frequency of the words present in the document.\\
+
+The following formula is used to calculate the probability of a message being spam or not:
+\paragraph{Equation}\label{equation}
+
+\begin{verbatim}
+    P(w|c) = (C(w, c) + 1) / (C(c) + |V|)
+
+    where,
+    P(w|c) = the probability of a word belongs to given class c (ham/spam)
+    C(w, c) =  the frequency of the word in the given class c
+    C(c) = total number of words in the given class
+    |V| = number of the unique vocabulary in the dataset.
+\end{verbatim}
+
+\section*{Challenges}\label{challenges}
+
+There are a few challenges for this project. To get good results, data
+processing and feature extraction are most important here. In this
+project, only text cleaning is done as data processing, but feature
+extraction has not been applied.\\
+
+The following steps are done for text cleaning:
+
+\begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item convert all letters to lowercase
+    \item clean punctuation
+    \item clean numbers
+    \item remove multiple spaces
+    \item remove non-ascii characters
+    \item remove not alphabetic characters
+    \item remove single characters
+    \item remove hyperlinks
+\end{itemize}
+
+\section*{Pre-requisites and Environment
+  Settings}\label{pre-requisites-and-environment-settings}
+
+\begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item Python \textgreater{}= 3.8
+    \item Pandas
+\end{itemize}
+
+\newpage
+
+\section*{Run Command / Usage}\label{run-command-usage}
+
+\begin{lstlisting}[breaklines]
+<create a virtual environment>
+$ python3 -m venv spamfilter
+
+<activate the virtual environment>
+$ source spamfilter/bin/activate
+
+<install the requirement>
+$ python3 -m pip install -r requirements.txt
+
+<run the training code>
+$ python3 code/training.py -i <spam.csv file> -os <output spam probability file> -oh <output ham probability file>
+
+<classify the test set>
+$ python3 code/classify.py -i <testing dataset .csv file> -is <spam probability file> -ih <ham probability file> -o <classification output filename>
+        
+<add new training to training set>
+$ python3 code/addtotraining.py -is <input spam probability file> -ih <input ham probability file> -s <new training set file>
+\end{lstlisting}
+
+Some notes,
+
+\begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item Creating and activating virtual environment are optional steps.
+    \item The first row of the input file is counted as a header. So every input file should have a header row; otherwise, the first row will be excluded from data.
+\end{itemize}
+
+\section*{Examples to Run}\label{examples-to-run}
+\begin{lstlisting}[breaklines]
+<to run train dataset>
+$ python3 code/training.py -i data/spam.csv -os data/spam_probability.csv -oh data/ham_probability.csv
+
+<to classify test data>
+$ python3 code/classify.py -i data/test.csv -is data/spam_probability.csv -ih data/ham_probability.csv -o data/output.csv
+
+<to add new dataset to trained data>
+$ python3 code/addtotraining.py -is data/spam_probability.csv -ih data/ham_probability.csv -s data/new_training.csv
+    
+\end{lstlisting}
+\end{document}
