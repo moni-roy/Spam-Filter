@@ -21,7 +21,6 @@ def build_word_frequency_with_total(data, args):
     spam = data[data['label'] == 'spam']
     ham = data[data['label'] == 'ham']
 
-
     # concatenate all messages for each label
     spam_all_messages = spam['message'].str.cat(sep=' ')
     ham_all_messages = ham['message'].str.cat(sep=' ')
@@ -74,6 +73,9 @@ def main():
 
     # read csv file
     data = h.read_csv_file(args.input)
+    
+    # clean data
+    data = h.clean_data(data)
 
     # build word frequency
     build_word_frequency_with_total(data, args)

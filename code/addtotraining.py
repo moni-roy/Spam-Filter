@@ -29,6 +29,9 @@ def addToTraining(ham, spam, input_file):
     
     # read new input csv file line by line
     data = h.read_csv_file(input_file)
+    # clean data
+    data = h.clean_data(data)
+    
     # line by line pd dataframe 
     for index, row in data.iterrows():
         # get the label and text from the input file

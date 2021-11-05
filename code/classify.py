@@ -1,4 +1,5 @@
 import argparse
+import helper as h
 
 def read_args():
     parser = argparse.ArgumentParser(description='Classify the emails')
@@ -37,8 +38,6 @@ def classify(train_ham, train_spam, test_set):
     spam_unique_words = set(spam_word_frequency.keys())
     # total number of unique words in both ham and spam
     total_word_count = ham_unique_words.union(spam_unique_words).__len__()
-
-    print("Total number of unique words in both ham and spam:", total_word_count)
     
     # calculate the parameters
     # p(w|ham) = (frequency of word in ham + 1) / (total number of words in ham + total number of words)
@@ -50,32 +49,47 @@ def classify(train_ham, train_spam, test_set):
     for word, frequency in spam_word_frequency.items():
         parametrized_spam_word_frequency[word] = (frequency + 1) / (total_spam_word_count + total_word_count)
 
-    # read the test file each line is a message
-    # classify the message as spam or ham based on the probability of each word in the message
-    # save the result to the output file as key, value pair of message and its classification
-    with open(test_set, 'r') as f:
-        lines = f.readlines()
-        result = {}
-        for line in lines:
-            message = line.split(' ')
-            ham_probability = 1
-            spam_probability = 1
-            for word in message:
-                if word in parametrized_ham_word_frequency:
-                    ham_probability *= parametrized_ham_word_frequency[word]
-                if word in parametrized_spam_word_frequency:
-                    spam_probability *= parametrized_spam_word_frequency[word]
-            if ham_probability > spam_probability:
-                result[line] = 'ham'
+    # read the file
+    test_data = h.read_csv_file(test_set)
+    # predict the class of each message
+    predicted_class = {}
+    for message in test_data['message']:
+        # clean the message
+        cleaned_message = message.lower()
+        # remove punctuation
+        cleaned_message = cleaned_message.translate(str.maketrans('', '', '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'))
+        # remove numbers
+        cleaned_message = cleaned_message.translate(str.maketrans('', '', '0123456789'))
+        # remove non-alphabetical characters
+        cleaned_message = cleaned_message.translate(str.maketrans('', '', '!@#$%^&*()_+-=[]{};\':"|,./<>?'))
+        # remove non-ascii characters
+        cleaned_message = cleaned_message.encode('ascii', 'ignore').decode('ascii')
+
+        ham_probability = 1
+        spam_probability = 1
+        # calculate the probability of each word in the message
+        for word in cleaned_message.split(' '):
+            if word in parametrized_ham_word_frequency:
+                ham_probability *= parametrized_ham_word_frequency[word]
             else:
-                result[line] = 'spam'
+                ham_probability *= 1 / (total_ham_word_count + total_word_count)
+            if word in parametrized_spam_word_frequency:
+                spam_probability *= parametrized_spam_word_frequency[word]
+            else:
+                spam_probability *= 1 / (total_spam_word_count + total_word_count)
+
+        # compare the probability of each word in the message with the probability of each word in the training set
+        if ham_probability > spam_probability:
+            predicted_class[message] = 'ham'
+        else:
+            predicted_class[message] = 'spam'
     
     # save the result to the output file as key, value pair of message and its classification
     with open(args.output, 'w') as f:
-        for key, value in result.items():
+        f.write('label, message\n')
+        for key, value in predicted_class.items():
             f.write(value + ', ' + key + '\n')
     
-
 if __name__ == '__main__':
     args = read_args()
     classify(args.input_ham, args.input_spam, args.input)
