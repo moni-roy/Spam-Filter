@@ -55,7 +55,7 @@ Naive Bayes Classifier is used to calculate the probability of the spam/hum mess
 
 Naive Bayes classifiers are highly scalable, requiring a number of parameters linear in the number of variables (features/predictors) in a learning problem. Maximum-likelihood training can be done by evaluating a closed-form expression,  which takes linear time, rather than by expensive iterative approximation as used for many other types of classifiers.
 
-#### Formulas
+#### Equation:
 
 ```math
 P(w|c) = (C(w, c) + 1) / (C(c) + |V|)
@@ -74,7 +74,7 @@ C(c) = total number of words in the given class
 
 ## Run Command
 
-```bash
+```text
 <create a virtual environment>
 python3 -m venv spamfilter
 
@@ -97,6 +97,6 @@ python3 code/addtotraining.py -is <input spam probability file> -ih <input ham p
 
 Some notes,
 
-- Creating and activating virtual environment are option steps.
+- Creating and activating virtual environment are optional steps.
 - Training input file should have level in the first row, otherwise first rows will be excluded from data.
 - Same condition applicable for addToTraining. It should be a file and same structure as training file.
