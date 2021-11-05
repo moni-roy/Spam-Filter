@@ -41,8 +41,8 @@ def classify(train_ham, train_spam, test_set):
     print("Total number of unique words in both ham and spam:", total_word_count)
     
     # calculate the parameters
-    # p(w|ham) = (frequency of word in ham + 1) / (total number of words in ham + total number of words in spam)
-    # p(w|spam) = (frequency of word in spam + 1) / (total number of words in ham + total number of words in spam)
+    # p(w|ham) = (frequency of word in ham + 1) / (total number of words in ham + total number of words)
+    # p(w|spam) = (frequency of word in spam + 1) / (total number of words in spam + total number of words)
     parametrized_ham_word_frequency = {}
     parametrized_spam_word_frequency = {}
     for word, frequency in ham_word_frequency.items():
